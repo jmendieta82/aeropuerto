@@ -1,6 +1,24 @@
 from rest_framework import serializers
 from aeropuerto_app.models import *
 
+class Usuario_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Usuario
+        fields = '__all__'
+    def create(self, validated_data):
+        user = Usuario(
+            username=validated_data['username'],
+            email=validated_data['email'],
+            telefono=validated_data['telefono'],
+            direccion=validated_data['direccion'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name'],
+            fecha_nacimiento=validated_data['fecha_nacimiento'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
+
 class Avion_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Avion
@@ -9,12 +27,12 @@ class Avion_Serializer(serializers.ModelSerializer):
 class  Piloto_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Piloto
-        fields = '_all_'
+        fields = '__all__'
 
 class  Tripulacion_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Tripulacion
-        fields = '_all_'
+        fields = '__all__'
 
 class  Vuelo_Serializer(serializers.ModelSerializer):
     avion = Avion_Serializer(read_only=True)
@@ -23,7 +41,7 @@ class  Vuelo_Serializer(serializers.ModelSerializer):
     piloto_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Piloto.objects.all(), source='piloto')
     class Meta:
         model = Vuelo
-        fields = '_all_'
+        fields = '__all__'
 
 class  Itinerario_Serializer(serializers.ModelSerializer):
     vuelo = Vuelo_Serializer(read_only=True)
@@ -32,4 +50,4 @@ class  Itinerario_Serializer(serializers.ModelSerializer):
     tripulacion_id = serializers.PrimaryKeyRelatedField(write_only=True, queryset=Tripulacion.objects.all(), source='tripulacion')
     class Meta:
         model = Itinerario
-        fields = '_all_'
+        fields = '__all__'
